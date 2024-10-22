@@ -2,7 +2,7 @@
   "title": "Settings",
   "note": "Settings are not saved automatically. Use the button on the bottom of the page to save them.",
   "font": "Font",
-  "fontsProvidedBy": "Fonts provided by {0};",
+  "fontsProvidedBy": "Fonts provided by {0}.",
   "googleFonts": "Google Fonts",
   "textColor": "Text Color",
   "fontSize": "Text Font Size",

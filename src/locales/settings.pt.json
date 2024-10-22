@@ -2,7 +2,7 @@
   "title": "Configurações",
   "note": "As configurações não são salvas automaticamente. Use o botão na parte inferior da página para salvá-las.",
   "font": "Fonte",
-  "fontsProvidedBy": "Fontes fornecidas por {0};",
+  "fontsProvidedBy": "Fontes fornecidas por {0}.",
   "googleFonts": "Google Fonts",
   "textColor": "Cor do Texto",
   "fontSize": "Tamanho da Fonte do Texto",
