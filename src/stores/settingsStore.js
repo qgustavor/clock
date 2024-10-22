@@ -5,10 +5,11 @@ export const useSettingsStore = defineStore('settings', () => {
   const font = ref('Nova Mono')
   const color = ref('#00FF00')
   const avoidBurnIn = ref(true)
-  const firstLineFormatting = ref('p')
+  const firstLineFormatting = ref('kk:mm')
   const secondLineFormatting = ref('P')
   const language = ref(navigator.language)
   const recurringEvents = ref('')
+  const scaleFactor = ref(0.8)
 
   const setSettings = (settings) => {
     font.value = settings.font
@@ -18,6 +19,7 @@ export const useSettingsStore = defineStore('settings', () => {
     secondLineFormatting.value = settings.secondLineFormatting
     language.value = settings.language
     recurringEvents.value = settings.recurringEvents
+    scaleFactor.value = settings.scaleFactor
   }
 
   return {
@@ -28,6 +30,7 @@ export const useSettingsStore = defineStore('settings', () => {
     secondLineFormatting,
     language,
     recurringEvents,
+    scaleFactor,
     setSettings
   }
 }, { persist: true })

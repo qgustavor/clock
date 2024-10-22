@@ -19,11 +19,9 @@ const defaultSettings = {
   alignHoriz: false, // if true, textFit will set text-align: center
   multiLine: false, // if true, textFit will not set white-space: no-wrap
   detectMultiLine: true, // disable to turn off automatic multi-line sensing
-  minFontSize: 6,
-  maxFontSize: 80,
   reProcess: true, // if true, textFit will re-process already-fit nodes. Set to 'false' for better performance
   widthOnly: false, // if true, textFit will fit text to element width, regardless of text height
-  alignVertWithFlexbox: false // if true, textFit will use flexbox for vertical alignment
+  scaleFactor: 1
 }
 
 export default function textFit (els, options) {
@@ -51,10 +49,6 @@ export default function textFit (els, options) {
  * @param  {Object} settings     Options for fit.
  */
 function processItem (el, settings) {
-  if (!isElement(el) || (!settings.reProcess && el.getAttribute('textFitted'))) {
-    return false
-  }
-
   // Set textFitted attribute so we know this was processed.
   if (!settings.reProcess) {
     el.setAttribute('textFitted', 1)
@@ -68,57 +62,9 @@ function processItem (el, settings) {
   const originalWidth = innerWidth(el)
   const originalHeight = innerHeight(el)
 
-  // Don't process if we can't find box dimensions
-  if (!originalWidth || (!settings.widthOnly && !originalHeight)) {
-    if (!settings.widthOnly) {
-      throw new Error(`Set a static height and width on the target element ${el.outerHTML} before using textFit!`)
-    } else {
-      throw new Error(`Set a static width on the target element ${el.outerHTML} before using textFit!`)
-    }
-  }
-
-  // Add textFitted span inside this container.
-  if (!originalHTML.includes('textFitted')) {
-    innerSpan = document.createElement('span')
-    innerSpan.className = 'textFitted'
-    // Inline block ensure it takes on the size of its contents, even if they are enclosed
-    // in other tags like <p>
-    innerSpan.style.display = 'inline-block'
-    innerSpan.innerHTML = originalHTML
-    el.innerHTML = ''
-    el.appendChild(innerSpan)
-  } else {
-    // Reprocessing.
-    innerSpan = el.querySelector('span.textFitted')
-    // Remove vertical align if we're reprocessing.
-    if (hasClass(innerSpan, 'textFitAlignVert')) {
-      innerSpan.className = innerSpan.className.replace('textFitAlignVert', '')
-      innerSpan.style.height = ''
-      el.className.replace('textFitAlignVertFlex', '')
-    }
-  }
-
-  // Prepare & set alignment
-  if (settings.alignHoriz) {
-    el.style['text-align'] = 'center'
-    innerSpan.style['text-align'] = 'center'
-  }
-
-  // Check if this string is multiple lines
-  // Not guaranteed to always work if you use wonky line-heights
-  let multiLine = settings.multiLine
-  if (settings.detectMultiLine && !multiLine &&
-    innerSpan.getBoundingClientRect().height >= parseInt(window.getComputedStyle(innerSpan)['font-size'], 10) * 2) {
-    multiLine = true
-  }
-
-  // If we're not treating this as a multiline string, don't let it wrap.
-  if (!multiLine) {
-    el.style['white-space'] = 'nowrap'
-  }
-
-  low = settings.minFontSize
-  high = settings.maxFontSize
+  innerSpan = el.querySelector('span.textFitted')
+  low = settings.minFontSize || 0
+  high = settings.maxFontSize || originalHeight
 
   // Binary search for highest best fit
   let size = low
@@ -139,23 +85,7 @@ function processItem (el, settings) {
   }
   // found, updating font if differs:
   if (innerSpan.style.fontSize !== `${size}px`) {
-    innerSpan.style.fontSize = `${size}px`
-  }
-
-  // Our height is finalized. If we are aligning vertically, set that up.
-  if (settings.alignVert) {
-    addStyleSheet()
-    const height = innerSpan.scrollHeight
-    if (window.getComputedStyle(el).position === 'static') {
-      el.style.position = 'relative'
-    }
-    if (!hasClass(innerSpan, 'textFitAlignVert')) {
-      innerSpan.className = `${innerSpan.className} textFitAlignVert`
-    }
-    innerSpan.style.height = `${height}px`
-    if (settings.alignVertWithFlexbox && !hasClass(el, 'textFitAlignVertFlex')) {
-      el.className = `${el.className} textFitAlignVertFlex`
-    }
+    innerSpan.style.fontSize = `${size * settings.scaleFactor}px`
   }
 }
 
@@ -173,43 +103,4 @@ function innerWidth (el) {
   return el.getBoundingClientRect().width -
     parseInt(style.getPropertyValue('padding-left'), 10) -
     parseInt(style.getPropertyValue('padding-right'), 10)
-}
-
-// Returns true if it is a DOM element
-function isElement (o) {
-  return (
-    typeof HTMLElement === 'object'
-      ? o instanceof window.HTMLElement // DOM2
-      : o && typeof o === 'object' && o !== null && o.nodeType === 1 && typeof o.nodeName === 'string'
-  )
-}
-
-function hasClass ({ className }, cls) {
-  return ` ${className} `.includes(` ${cls} `)
-}
-
-// Better than a stylesheet dependency
-function addStyleSheet () {
-  if (document.getElementById('textFitStyleSheet')) return
-  const style = [
-    '.textFitAlignVert{',
-    'position: absolute;',
-    'top: 0; right: 0; bottom: 0; left: 0;',
-    'margin: auto;',
-    'display: flex;',
-    'justify-content: center;',
-    'flex-direction: column;',
-    '}',
-    '.textFitAlignVertFlex{',
-    'display: flex;',
-    '}',
-    '.textFitAlignVertFlex .textFitAlignVert{',
-    'position: static;',
-    '}'
-  ].join('')
-
-  const css = document.createElement('style')
-  css.id = 'textFitStyleSheet'
-  css.innerHTML = style
-  document.body.appendChild(css)
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-8 bg-gray-800 text-white h-screen">
+  <div class="p-8 bg-gray-800 text-white h-full">
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-2xl flex items-center">
         <RouterLink
@@ -18,11 +18,15 @@
       </h1>
     </div>
 
+    <p class="helper mb-6">
+      Settings are not saved automatically. Use the button on the bottom of the page to save them.
+    </p>
+
     <div class="mb-6">
       <label class="block mb-2">Font</label>
       <select
         v-model="selectedFont"
-        class="p-2 bg-gray-700 text-white"
+        class="p-2 bg-gray-700 text-white w-full"
       >
         <option
           v-for="font of fontNames"
@@ -32,6 +36,10 @@
           {{ font }}
         </option>
       </select>
+
+      <p class="helper">
+        Fonts provided by <a href="https://fonts.google.com/" target="_blank">Google Fonts</a>.
+      </p>
     </div>
 
     <div class="mb-6">
@@ -39,8 +47,24 @@
       <input
         v-model="selectedColor"
         type="color"
-        class="p-2 bg-gray-700 text-white"
+        class="p-2 bg-gray-700 text-white w-full h-10"
       >
+    </div>
+
+    <div class="mb-6">
+      <label class="block mb-2">Text Font Size</label>
+      <input
+        v-model="scaleFactor"
+        type="range"
+        class="p-2 bg-gray-700 text-white w-full h-10"
+        max="1"
+        min="0.1"
+        step="0.1"
+      >
+
+      <p class="helper">
+        All to the right means the maximum size that can fit in the screen.
+      </p>
     </div>
 
     <div class="mb-6">
@@ -62,11 +86,11 @@
       <label class="block mb-2">First Line Formatting</label>
       <input
         v-model="firstLineFormatting"
-        class="p-2 bg-gray-700 text-white"
+        class="p-2 bg-gray-700 text-white w-full"
       >
 
       <p class="helper">
-        Use <a href="https://date-fns.org/v4.1.0/docs/format">date-fns format</a>. Example: "p" for just showing minutes and seconds and "pp" to include seconds too.
+        Use <a href="https://date-fns.org/v4.1.0/docs/format" target="_blank">date-fns format</a>. Example: "p" for just showing minutes and seconds and "pp" to include seconds too.
       </p>
     </div>
 
@@ -74,11 +98,11 @@
       <label class="block mb-2">Second Line Formatting</label>
       <input
         v-model="secondLineFormatting"
-        class="p-2 bg-gray-700 text-white"
+        class="p-2 bg-gray-700 text-white w-full"
       >
 
       <p class="helper">
-        If you left it blank just the first line will be shown. Example: "P" to show the current date.
+        If you left it blank just the first line will be shown. Examples: "P" to show the current date.
       </p>
     </div>
 
@@ -86,7 +110,7 @@
       <label class="block mb-2">Language</label>
       <input
         v-model="language"
-        class="p-2 bg-gray-700 text-white"
+        class="p-2 bg-gray-700 text-white w-full"
       >
 
       <p class="helper">
@@ -98,11 +122,11 @@
       <label class="block mb-2">Recurring events</label>
       <textarea
         v-model="recurringEvents"
-        class="p-2 bg-gray-700 text-white"
+        class="p-2 bg-gray-700 text-white w-full"
       />
 
       <p class="helper">
-        Countdown to recurring events will be shown below the clock when they are less than one hour from happening.<br>You can define them by writing like this: "Lunch: at 12:00 pm" and "Soccer Training: at 17:00 pm on Weds, Thurs and Fri".<br>Write one event per line. (<a href="https://breejs.github.io/later/parsers.html#text">syntax documentation</a>).
+        Countdown to recurring events will be shown below the clock when they are less than one hour from happening, only the most close event showing up. You can define them by writing like this: "Lunch: at 12:00 pm" and "Soccer Training: at 17:00 pm on Weds, Thurs and Fri". Write one event per line. For more info on how to specify event dates check <a href="https://breejs.github.io/later/parsers.html#text" target="_blank">the syntax documentation</a>.
       </p>
     </div>
 
@@ -114,7 +138,7 @@
       Save settings and return
     </button>
 
-    <p class="helper">
+    <p class="helper mb-10">
       Tip: Tap or click twice to switch to full screen (and hide browser interface) or install the web app.
     </p>
   </div>
@@ -134,6 +158,7 @@ const secondLineFormatting = ref('')
 const language = ref('')
 const recurringEvents = ref('')
 const avoidBurnIn = ref(false)
+const scaleFactor = ref(1)
 const router = useRouter()
 
 // Load settings on component mount
@@ -145,6 +170,7 @@ onMounted(async () => {
   secondLineFormatting.value = settingsStore.secondLineFormatting
   language.value = settingsStore.language
   recurringEvents.value = settingsStore.recurringEvents
+  scaleFactor.value = settingsStore.scaleFactor
 })
 
 // Save settings
@@ -156,7 +182,8 @@ const saveSettings = () => {
     firstLineFormatting: firstLineFormatting.value,
     secondLineFormatting: secondLineFormatting.value,
     language: language.value,
-    recurringEvents: recurringEvents.value
+    recurringEvents: recurringEvents.value,
+    scaleFactor: scaleFactor.value
   })
   router.replace('/')
 }
@@ -164,6 +191,6 @@ const saveSettings = () => {
 
 <style>
 .helper {
-  @apply text-gray-300 text-sm mt-2;
+  @apply text-gray-300 text-sm mt-2 text-balance;
 }
 </style>

@@ -1,13 +1,13 @@
 <template>
   <div
-    class="relative h-screen bg-black flex items-center justify-center"
+    class="relative h-screen h-screen flex items-center justify-center"
     @dblclick="toggleFullScreen"
     @click="handleTap"
   >
     <div
       ref="clockElement"
       :style="clockStyle"
-      class="select-none leading-none"
+      class="select-none leading-none w-screen h-screen flex items-center justify-center text-center"
       :class="{
         'anti-burn-in': settingsStore.avoidBurnIn,
         'invisible': !fontLoaded || !localeLoaded
@@ -15,15 +15,17 @@
     >
       <span class="textFitted inline-block">
         {{ firstLine }}<br>
-        <span class="second-line">{{ secondLine }}</span><br>
+        <span class="second-line">{{ secondLine }}</span>
         <span class="event-line">{{ eventLine }}</span>
       </span>
     </div>
 
     <Transition name="fade">
       <RouterLink
-        v-if="!cogHidden"
-        class="absolute top-4 right-4 text-white p-2"
+        class="absolute top-4 right-4 text-white p-2 transition-opacity"
+        :class="[
+          cogHidden ? 'opacity-0 duration-1000' : 'transition-opacity'
+        ]"
         to="settings"
       >
         <svg
@@ -121,16 +123,10 @@ const fitText = () => {
   const el = clockElement.value
   if (!el) return
 
-  const height = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
-  el.style.width = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) + 'px'
-  el.style.height = height + 'px'
-
   textFit(el, {
     alignVert: true,
     alignHoriz: true,
-    alignVertWithFlexbox: true,
-    minFontSize: 10,
-    maxFontSize: height
+    scaleFactor: settingsStore.scaleFactor
   })
   resizeDebounced = null
 }
@@ -243,22 +239,12 @@ function handleEvents (eventsStr) {
     transform: translateY(-30px);
   }
 }
-.fade-enter-active {
-  transition: opacity 0.2s ease;
-}
-.fade-leave-active {
-  transition: opacity 5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
 .second-line {
+  @apply block;
   font-size: 0.4em;
 }
 .event-line {
+  @apply block;
   font-size: 0.2em;
 }
 </style>
