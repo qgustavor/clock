@@ -138,7 +138,7 @@ const handleResize = () => {
 }
 
 let clockInterval
-onMounted(async () => {
+onMounted(() => {
   later.date.localTime()
   updateTime()
   clockInterval = setInterval(updateTime, 1000)
@@ -147,19 +147,6 @@ onMounted(async () => {
   window.addEventListener('resize', handleResize)
 
   handleCogTap()
-
-  localeLoaded.value = false
-  if (settingsStore.language) {
-    const locales = await import('@/util/date-fns-locales.js')
-    const localeModule = locales[settingsStore.language]
-    if (localeModule) {
-      userLocale = await localeModule()
-      updateTime()
-      await nextTick()
-      fitText()
-    }
-  }
-  localeLoaded.value = true
 })
 
 onUnmounted(() => {
@@ -223,6 +210,22 @@ function handleEvents (eventsStr) {
   }
   newEventsArray.sort((a, b) => a.minTime - b.minTime)
   events = newEventsArray
+}
+
+watch(() => settingsStore.language, handleLocale, { immediate: true })
+async function handleLocale (language) {
+  localeLoaded.value = false
+  if (language) {
+    const locales = await import('@/util/date-fns-locales.js')
+    const localeModule = locales[language]
+    if (localeModule) {
+      userLocale = await localeModule()
+      updateTime()
+      await nextTick()
+      fitText()
+    }
+  }
+  localeLoaded.value = true
 }
 </script>
 
