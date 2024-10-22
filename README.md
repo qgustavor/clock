@@ -11,3 +11,5 @@ Except that's not just a simple clock app:
 - You can contribute to it adding more features.
 
 I don't accept donations for this project. It's a fucking simple clock app, no developer should ever think "that's worthy of adding ads or asking for money".
+
+[![neostandard javascript style](https://img.shields.io/badge/code_style-neostandard-7fffff?style=flat&labelColor=ff80ff)](https://github.com/neostandard/neostandard)
