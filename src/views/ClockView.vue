@@ -217,7 +217,7 @@ async function handleLocale (language) {
   localeLoaded.value = false
   if (language) {
     const locales = await import('@/util/date-fns-locales.js')
-    const localeModule = locales[language]
+    const localeModule = locales[language] ?? locales.default[language]
     if (localeModule) {
       userLocale = await localeModule()
       updateTime()
