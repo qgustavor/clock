@@ -7,7 +7,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const avoidBurnIn = ref(true)
   const firstLineFormatting = ref('kk:mm')
   const secondLineFormatting = ref('P')
-  const language = ref(navigator.language)
+  const language = ref(navigator.language.split('-')[0])
   const recurringEvents = ref('')
   const scaleFactor = ref(0.8)
 

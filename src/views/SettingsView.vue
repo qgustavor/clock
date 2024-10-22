@@ -14,16 +14,16 @@
             fill="#e8eaed"
           ><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" /></svg>
         </RouterLink>
-        <span>Settings</span>
+        <span>{{ t('settings.title') }}</span>
       </h1>
     </div>
 
     <p class="helper mb-6">
-      Settings are not saved automatically. Use the button on the bottom of the page to save them.
+      {{ t('settings.note') }}
     </p>
 
     <div class="mb-6">
-      <label class="block mb-2">Font</label>
+      <label class="block mb-2">{{ t('settings.font') }}</label>
       <select
         v-model="selectedFont"
         class="p-2 bg-gray-700 text-white w-full"
@@ -37,16 +37,16 @@
         </option>
       </select>
 
-      <p class="helper">
-        Fonts provided by <a
+      <i18n-t keypath="settings.fontsProvidedBy" tag="p" class="helper">
+        <a
           href="https://fonts.google.com/"
           target="_blank"
-        >Google Fonts</a>.
-      </p>
+        >{{ t('settings.googleFonts') }}</a>
+      </i18n-t>
     </div>
 
     <div class="mb-6">
-      <label class="block mb-2">Text Color</label>
+      <label class="block mb-2">{{ t('settings.textColor') }}</label>
       <input
         v-model="selectedColor"
         type="color"
@@ -55,7 +55,7 @@
     </div>
 
     <div class="mb-6">
-      <label class="block mb-2">Text Font Size</label>
+      <label class="block mb-2">{{ t('settings.fontSize') }}</label>
       <input
         v-model="scaleFactor"
         type="range"
@@ -66,7 +66,7 @@
       >
 
       <p class="helper">
-        All to the right means the maximum size that can fit in the screen.
+        {{ t('settings.fontSizeHelper') }}
       </p>
     </div>
 
@@ -77,66 +77,69 @@
           type="checkbox"
           class="mr-2"
         >
-        Avoid Screen Burn-In
+        {{ t('settings.avoidBurnIn') }}
       </label>
 
       <p class="helper">
-        Slowly moves the text up and down.
+        {{ t('settings.avoidBurnInHelper') }}
       </p>
     </div>
 
     <div class="mb-6">
-      <label class="block mb-2">First Line Formatting</label>
+      <label class="block mb-2">{{ t('settings.firstLine') }}</label>
       <input
         v-model="firstLineFormatting"
         class="p-2 bg-gray-700 text-white w-full"
       >
 
-      <p class="helper">
-        Use <a
+      <i18n-t keypath="settings.firstLineHelper" tag="p" class="helper">
+        <a
           href="https://date-fns.org/v4.1.0/docs/format"
           target="_blank"
-        >date-fns format</a>. Example: "p" for just showing minutes and seconds and "pp" to include seconds too.
-      </p>
+        >{{ t('settings.dateFnsFormat') }}</a>
+      </i18n-t>
     </div>
 
     <div class="mb-6">
-      <label class="block mb-2">Second Line Formatting</label>
+      <label class="block mb-2">{{ t('settings.secondLine') }}</label>
       <input
         v-model="secondLineFormatting"
         class="p-2 bg-gray-700 text-white w-full"
       >
 
       <p class="helper">
-        If you left it blank just the first line will be shown. Examples: "P" to show the current date.
+        {{ t('settings.secondLineHelper') }}
       </p>
     </div>
 
     <div class="mb-6">
-      <label class="block mb-2">Language</label>
+      <label class="block mb-2">{{ t('settings.language') }}</label>
       <input
         v-model="language"
         class="p-2 bg-gray-700 text-white w-full"
       >
 
       <p class="helper">
-        Used only for date formatting at the moment. Specify just two letters.
+        {{ t('settings.languageHelper', [
+          availableLocales.join(', '),
+          partialLocales
+        ]) }}
       </p>
     </div>
 
     <div class="mb-6">
-      <label class="block mb-2">Recurring events</label>
+      <label class="block mb-2">{{ t('settings.recurringEvents') }}</label>
       <textarea
         v-model="recurringEvents"
         class="p-2 bg-gray-700 text-white w-full"
       />
 
-      <p class="helper">
-        Countdown to recurring events will be shown below the clock when they are less than one hour from happening, only the most close event showing up. You can define them by writing like this: "Lunch: at 12:00 pm" and "Soccer Training: at 17:00 pm on Weds, Thurs and Fri". Write one event per line. For more info on how to specify event dates check <a
+      <i18n-t keypath="settings.recurringEventsHelper" tag="p" class="helper">
+        <a
           href="https://breejs.github.io/later/parsers.html#text"
           target="_blank"
-        >the syntax documentation</a>.
-      </p>
+        >{{ t('settings.syntaxDoc') }}</a>
+      </i18n-t>
     </div>
 
     <!-- Save All Button -->
@@ -144,11 +147,11 @@
       class="px-4 py-2 bg-green-600 text-white"
       @click="saveSettings"
     >
-      Save settings and return
+      {{ t('settings.saveAndReturn') }}
     </button>
 
     <p class="helper mb-10">
-      Tip: Tap or click twice to switch to full screen (and hide browser interface) or install the web app.
+      {{ t('settings.tip') }}
     </p>
   </div>
 </template>
@@ -158,6 +161,9 @@ import { ref, onMounted } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { useSettingsStore } from '../stores/settingsStore'
 import fontNames from '@virtual/google-fonts'
+
+import { useI18n } from 'vue-i18n'
+const { t, availableLocales } = useI18n()
 
 const settingsStore = useSettingsStore()
 const selectedFont = ref('')
@@ -169,6 +175,7 @@ const recurringEvents = ref('')
 const avoidBurnIn = ref(false)
 const scaleFactor = ref(1)
 const router = useRouter()
+const partialLocales = ref('')
 
 // Load settings on component mount
 onMounted(async () => {
@@ -180,6 +187,14 @@ onMounted(async () => {
   language.value = settingsStore.language
   recurringEvents.value = settingsStore.recurringEvents
   scaleFactor.value = settingsStore.scaleFactor
+  
+  const localesObj = await import('@/util/date-fns-locales.js')
+  const dateFnsLocales = Object.keys(localesObj.default)
+  for (const el of availableLocales) {
+    const index = dateFnsLocales.indexOf(el)
+    if (index !== -1) dateFnsLocales.splice(index, 1)
+  }
+  partialLocales.value = dateFnsLocales.join(', ')
 })
 
 // Save settings

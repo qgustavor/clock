@@ -3,14 +3,18 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
 import virtual from '@rollup/plugin-virtual'
+import { resolve } from 'path'
 import fs from 'fs'
-
 const fonts = JSON.parse(fs.readFileSync('./node_modules/google-fonts-complete/google-fonts.json', 'utf-8'))
+import i18nResources from 'vite-plugin-i18n-resources'
 
 // https://vite.dev/config/
 export default defineConfig({
   base: '/clock/',
   plugins: [
+    i18nResources.default({
+      path: resolve(import.meta.dirname, './src/locales')
+    }),
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
