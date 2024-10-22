@@ -54,15 +54,12 @@ function processItem (el, settings) {
     el.setAttribute('textFitted', 1)
   }
 
-  let innerSpan
-  let low, mid, high
-
-  // Get element data.
-  const originalHTML = el.innerHTML
+  // Get element data
   const originalWidth = innerWidth(el)
   const originalHeight = innerHeight(el)
 
-  innerSpan = el.querySelector('span.textFitted')
+  const innerSpan = el.querySelector('span.textFitted')
+  let low, mid, high
   low = settings.minFontSize || 0
   high = settings.maxFontSize || originalHeight
 

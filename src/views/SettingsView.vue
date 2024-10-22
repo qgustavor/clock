@@ -38,7 +38,10 @@
       </select>
 
       <p class="helper">
-        Fonts provided by <a href="https://fonts.google.com/" target="_blank">Google Fonts</a>.
+        Fonts provided by <a
+          href="https://fonts.google.com/"
+          target="_blank"
+        >Google Fonts</a>.
       </p>
     </div>
 
@@ -90,7 +93,10 @@
       >
 
       <p class="helper">
-        Use <a href="https://date-fns.org/v4.1.0/docs/format" target="_blank">date-fns format</a>. Example: "p" for just showing minutes and seconds and "pp" to include seconds too.
+        Use <a
+          href="https://date-fns.org/v4.1.0/docs/format"
+          target="_blank"
+        >date-fns format</a>. Example: "p" for just showing minutes and seconds and "pp" to include seconds too.
       </p>
     </div>
 
@@ -126,7 +132,10 @@
       />
 
       <p class="helper">
-        Countdown to recurring events will be shown below the clock when they are less than one hour from happening, only the most close event showing up. You can define them by writing like this: "Lunch: at 12:00 pm" and "Soccer Training: at 17:00 pm on Weds, Thurs and Fri". Write one event per line. For more info on how to specify event dates check <a href="https://breejs.github.io/later/parsers.html#text" target="_blank">the syntax documentation</a>.
+        Countdown to recurring events will be shown below the clock when they are less than one hour from happening, only the most close event showing up. You can define them by writing like this: "Lunch: at 12:00 pm" and "Soccer Training: at 17:00 pm on Weds, Thurs and Fri". Write one event per line. For more info on how to specify event dates check <a
+          href="https://breejs.github.io/later/parsers.html#text"
+          target="_blank"
+        >the syntax documentation</a>.
       </p>
     </div>
 
