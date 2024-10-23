@@ -9,7 +9,7 @@
       :style="clockStyle"
       class="select-none leading-none w-screen h-screen flex items-center justify-center text-center"
       :class="{
-        'anti-burn-in': settingsStore.avoidBurnIn,
+        'anti-burn-in': !!settingsStore.avoidBurnIn,
         'invisible': !fontLoaded || !localeLoaded
       }"
     >
@@ -69,6 +69,7 @@ const clockStyle = computed(() => ({
 
 // Update time every second
 let userLocale
+let events = []
 const updateTime = () => {
   const now = new Date()
   const formatSettings = {
@@ -77,7 +78,7 @@ const updateTime = () => {
   }
   firstLine.value = settingsStore.firstLineFormatting
     ? format(now, settingsStore.firstLineFormatting, formatSettings)
-    : settingsStore.firstLineFormatting
+    : ''
   secondLine.value = settingsStore.secondLineFormatting
     ? format(now, settingsStore.secondLineFormatting, formatSettings)
     : ''
@@ -90,10 +91,10 @@ const updateTime = () => {
 
 // Handle tap and request wake lock
 const handleTap = async () => {
+  handleCogTap()
   if (!wakeLockActivated.value) {
     await requestWakeLock()
   }
-  handleCogTap()
 }
 
 const requestWakeLock = async () => {
@@ -185,7 +186,6 @@ function loadGoogleFont (fontName) {
   }
 }
 
-let events = []
 watch(() => settingsStore.recurringEvents, handleEvents, { immediate: true })
 function handleEvents (eventsStr) {
   const newEventsArray = []
@@ -231,7 +231,7 @@ async function handleLocale (language) {
 
 <style scoped>
 .anti-burn-in {
-  animation: move 3600s linear infinite alternate;
+  animation: move 900s linear infinite alternate;
 }
 
 @keyframes move {
