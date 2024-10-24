@@ -48,6 +48,7 @@ import textFit from '@/util/textfit.js'
 import FontFaceObserver from 'fontfaceobserver'
 import { format, formatDistanceToNow } from 'date-fns'
 import later from '@breejs/later'
+later.date.localTime()
 
 const settingsStore = useSettingsStore()
 
@@ -140,7 +141,6 @@ const handleResize = () => {
 
 let clockInterval
 onMounted(() => {
-  later.date.localTime()
   updateTime()
   clockInterval = setInterval(updateTime, 1000)
 
